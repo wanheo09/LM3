@@ -16,19 +16,25 @@
 
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
+import json
 
 MODEL = "D:\\models\\hf\\Llama-3.1-8B-Instruct"
+
+# config.json에서 설정을 읽어옴
+with open("config.json", "r", encoding="utf-8") as f:
+    config = json.load(f)
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL)
 model = AutoModelForCausalLM.from_pretrained(MODEL, dtype=torch.bfloat16, device_map="cpu")
 
-with open("prompt.txt", "r", encoding="utf-8") as f:
+# config에 지정된 파일에서 프롬프트를 읽어옴
+with open(config["prompt_file"], "r", encoding="utf-8") as f:
     prompt = f.read().strip()
 
 input_ids = tokenizer(prompt, return_tensors="pt").to(model.device)["input_ids"]
 print(f"입력 token IDs shape: {input_ids.shape}")  # (1, seq_len)
 
-for step in range(4):
+for step in range(config["max_new_tokens"]):
     print(f"\n=== Step {step + 1} ===")
 
     # 1단계: token ID → embedding vector
