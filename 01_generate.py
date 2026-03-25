@@ -21,8 +21,10 @@ inputs = tokenizer(prompt, return_tensors="pt").to(model.device) if prompt else 
 outputs = model.generate(
     **inputs,
     max_new_tokens=config["max_new_tokens"],
-    max_length=2048,
     do_sample=False,
+    temperature=None,  # generation_config.json 기본값 무시 (do_sample=False와 충돌 방지)
+    top_p=None,        # generation_config.json 기본값 무시 (do_sample=False와 충돌 방지)
+    pad_token_id=tokenizer.eos_token_id,  # pad_token 미설정 경고 억제
 )
 
 input_ids = inputs["input_ids"][0].tolist()
