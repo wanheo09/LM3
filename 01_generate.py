@@ -25,4 +25,18 @@ outputs = model.generate(
     do_sample=False,
 )
 
-print(tokenizer.decode(outputs[0], skip_special_tokens=True))
+input_ids = inputs["input_ids"][0].tolist()
+output_ids = outputs[0].tolist()
+
+print("=== 입력 문장 → token ID ===")
+for token_id in input_ids:
+    token_str = tokenizer.decode([token_id])
+    print(f"  {repr(token_str):20s} → {token_id}")
+
+print("\n=== 출력 token ID → 문장 ===")
+for token_id in output_ids:
+    token_str = tokenizer.decode([token_id])
+    print(f"  {token_id:6d} → {repr(token_str)}")
+
+print("\n=== 최종 출력 문장 ===")
+print(tokenizer.decode(output_ids, skip_special_tokens=True))
