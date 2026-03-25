@@ -18,11 +18,11 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 import json
 
-MODEL = "D:\\models\\hf\\Llama-3.1-8B-Instruct"
-
 # config.json에서 설정을 읽어옴
 with open("config.json", "r", encoding="utf-8") as f:
     config = json.load(f)
+
+MODEL = config["model_path"]
 
 tokenizer = AutoTokenizer.from_pretrained(MODEL)
 model = AutoModelForCausalLM.from_pretrained(MODEL, dtype=torch.bfloat16, device_map="cpu")
